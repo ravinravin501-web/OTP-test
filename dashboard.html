@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMK Dashboard</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#000,#4b0000,#b00000);
+  color:white;
+}
+
+/* HEADER */
+.header{
+  width:100%;
+  padding:18px 20px;
+  background:#111;
+  border-bottom:4px solid red;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header h2{
+  color:#ffcc00;
+  font-size:22px;
+}
+
+/* PROFILE */
+.profile-box{
+  position:relative;
+}
+
+.profile-img{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:3px solid #ffcc00;
+  background:white;
+  cursor:pointer;
+  object-fit:cover;
+}
+
+.profile-menu{
+  display:none;
+  position:absolute;
+  right:0;
+  top:60px;
+  width:230px;
+  background:#111;
+  border:2px solid red;
+  border-radius:15px;
+  padding:15px;
+  box-shadow:0 0 20px rgba(255,0,0,.5);
+  z-index:999;
+}
+
+.profile-menu p{
+  color:white;
+  font-size:14px;
+  margin-bottom:12px;
+  word-break:break-word;
+}
+
+.profile-menu button{
+  width:100%;
+  padding:12px;
+  background:red;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.profile-menu button:hover{
+  background:#ffcc00;
+  color:black;
+}
+
+/* MAIN */
+.container{
+  padding:35px 20px;
+  text-align:center;
+}
+
+.welcome-card{
+  max-width:500px;
+  margin:30px auto;
+  background:#111;
+  border:3px solid #ffcc00;
+  border-radius:25px;
+  padding:30px 20px;
+  box-shadow:0 0 25px rgba(255,0,0,.5);
+}
+
+.welcome-card h1{
+  color:#ffcc00;
+  margin-bottom:15px;
+}
+
+.welcome-card p{
+  color:#ddd;
+  line-height:1.6;
+}
+
+.btn{
+  display:inline-block;
+  margin-top:25px;
+  padding:14px 25px;
+  background:red;
+  color:white;
+  text-decoration:none;
+  border-radius:12px;
+  font-weight:bold;
+}
+
+.btn:hover{
+  background:#ffcc00;
+  color:#000;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <h2>DMK Dashboard</h2>
+
+  <div class="profile-box">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+         class="profile-img"
+         onclick="toggleMenu()">
+
+    <div class="profile-menu" id="profileMenu">
+      <p id="gmailText">user@gmail.com</p>
+      <button onclick="logoutUser()">Logout</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="welcome-card">
+    <h1>வரவேற்கிறோம்!</h1>
+    <p>OTP Login வெற்றிகரமாக முடிந்தது.</p>
+    <p>இந்த Dashboard page-ல் உங்கள் DMK website updates, members details, videos, and important links add செய்யலாம்.</p>
+
+    <a href="index.html" class="btn">Go to Home</a>
+  </div>
+
+</div>
+
+<script>
+/* LOGIN CHECK */
+let isLoggedIn = localStorage.getItem("isLoggedIn");
+let savedUser = localStorage.getItem("gmail");
+
+if(isLoggedIn !== "true"){
+  window.location.href = "login.html";
+}
+
+if(savedUser){
+  document.getElementById("gmailText").innerHTML = savedUser;
+}
+
+/* PROFILE MENU */
+function toggleMenu(){
+  let menu = document.getElementById("profileMenu");
+
+  if(menu.style.display === "block"){
+    menu.style.display = "none";
+  }else{
+    menu.style.display = "block";
+  }
+}
+
+/* LOGOUT */
+function logoutUser(){
+  localStorage.removeItem("gmail");
+  localStorage.removeItem("isLoggedIn");
+
+  alert("Logged Out Successfully");
+
+  window.location.href = "login.html";
+}
+</script>
+
+</body>
+  </html>
