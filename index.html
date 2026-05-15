@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMK OTP Login</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#000,#4b0000,#b00000);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  padding:20px;
+}
+
+.login-box{
+  width:100%;
+  max-width:390px;
+  background:#111;
+  border:3px solid #ffcc00;
+  border-radius:25px;
+  padding:30px 25px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(255,0,0,.6);
+}
+
+.logo{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  margin-bottom:15px;
+  border:3px solid red;
+  object-fit:cover;
+}
+
+h1{
+  color:#ffcc00;
+  font-size:25px;
+  margin-bottom:8px;
+}
+
+p{
+  color:#ddd;
+  margin-bottom:20px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  margin:10px 0;
+  border-radius:12px;
+  border:2px solid red;
+  font-size:16px;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  background:red;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#ffcc00;
+  color:#000;
+}
+
+#msg{
+  margin-top:18px;
+  font-weight:bold;
+  color:#ffcc00;
+}
+
+.note{
+  margin-top:20px;
+  font-size:13px;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+  <!-- optional: replace logo.png with your image -->
+  <img src="logo.png" class="logo" onerror="this.style.display='none'">
+
+  <h1>DMK OTP Login</h1>
+  <p>உங்கள் Gmail / Mobile மூலம் Login செய்யவும்</p>
+
+  <input type="text" id="userInput" placeholder="Enter Gmail or Mobile Number">
+
+  <button onclick="sendOTP()">Send OTP</button>
+
+  <input type="text" id="otp" placeholder="Enter OTP">
+
+  <button onclick="verifyOTP()">Verify & Login</button>
+
+  <div id="msg"></div>
+
+  <div class="note">
+    Test OTP: <b>123456</b>
+  </div>
+
+</div>
+
+<script>
+let testOTP = "123456";
+
+function sendOTP(){
+  let user = document.getElementById("userInput").value.trim();
+
+  if(user === ""){
+    document.getElementById("msg").innerHTML =
+      "❌ Gmail அல்லது Mobile number உள்ளிடவும்";
+    return;
+  }
+
+  localStorage.setItem("gmail", user);
+
+  document.getElementById("msg").innerHTML =
+    "✅ Test OTP sent: 123456";
+}
+
+function verifyOTP(){
+  let user = document.getElementById("userInput").value.trim();
+  let otp = document.getElementById("otp").value.trim();
+
+  if(user === ""){
+    document.getElementById("msg").innerHTML =
+      "❌ Gmail அல்லது Mobile number உள்ளிடவும்";
+    return;
+  }
+
+  if(otp === testOTP){
+    localStorage.setItem("gmail", user);
+    localStorage.setItem("isLoggedIn", "true");
+
+    document.getElementById("msg").innerHTML =
+      "✅ OTP Verified Successfully";
+
+    setTimeout(()=>{
+      window.location.href = "dashboard.html";
+    },1000);
+
+  }else{
+    document.getElementById("msg").innerHTML =
+      "❌ தவறான OTP";
+  }
+}
+</script>
+
+</body>
+  </html>
