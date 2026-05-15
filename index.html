@@ -3,96 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DMK OTP Login</title>
+
+<title>DMK Login</title>
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <style>
+
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial, sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
 body{
-  min-height:100vh;
-  background:linear-gradient(135deg,#000,#4b0000,#b00000);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  padding:20px;
+min-height:100vh;
+background:
+linear-gradient(
+135deg,
+#000,
+#4b0000,
+#c40000
+);
+
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+overflow:hidden;
 }
+
+/* LOGIN BOX */
 
 .login-box{
-  width:100%;
-  max-width:390px;
-  background:#111;
-  border:3px solid #ffcc00;
-  border-radius:25px;
-  padding:30px 25px;
-  text-align:center;
-  box-shadow:0 0 30px rgba(255,0,0,.6);
+width:100%;
+max-width:390px;
+background:#111;
+border:3px solid #ffcc00;
+border-radius:28px;
+padding:35px 25px;
+text-align:center;
+box-shadow:0 0 30px rgba(255,0,0,.6);
+animation:fadeIn 1s ease;
 }
+
+/* LOGO */
 
 .logo{
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  margin-bottom:15px;
-  border:3px solid red;
-  object-fit:cover;
+width:90px;
+height:90px;
+border-radius:50%;
+border:3px solid red;
+margin-bottom:15px;
+object-fit:cover;
+background:white;
 }
+
+/* TITLE */
 
 h1{
-  color:#ffcc00;
-  font-size:25px;
-  margin-bottom:8px;
+color:#ffcc00;
+font-size:30px;
+margin-bottom:8px;
 }
 
-p{
-  color:#ddd;
-  margin-bottom:20px;
+.sub{
+color:#ddd;
+margin-bottom:25px;
+font-size:15px;
 }
+
+/* INPUT */
 
 input{
-  width:100%;
-  padding:15px;
-  margin:10px 0;
-  border-radius:12px;
-  border:2px solid red;
-  font-size:16px;
-  outline:none;
+width:100%;
+padding:15px;
+margin:12px 0;
+border-radius:14px;
+border:2px solid red;
+font-size:16px;
+outline:none;
 }
 
+/* BUTTON */
+
 button{
-  width:100%;
-  padding:15px;
-  margin-top:12px;
-  border:none;
-  border-radius:12px;
-  background:red;
-  color:white;
-  font-size:17px;
-  font-weight:bold;
-  cursor:pointer;
+width:100%;
+padding:15px;
+margin-top:12px;
+border:none;
+border-radius:14px;
+background:red;
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
 }
 
 button:hover{
-  background:#ffcc00;
-  color:#000;
+background:#ffcc00;
+color:black;
+transform:scale(1.02);
 }
+
+/* MESSAGE */
 
 #msg{
-  margin-top:18px;
-  font-weight:bold;
-  color:#ffcc00;
+margin-top:18px;
+font-weight:bold;
+color:#ffcc00;
+line-height:1.5;
 }
 
-.note{
-  margin-top:20px;
-  font-size:13px;
-  color:#aaa;
+/* FOOTER */
+
+.footer{
+margin-top:25px;
+font-size:13px;
+color:#aaa;
 }
+
+/* ANIMATION */
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateY(30px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
 </style>
 </head>
 
@@ -100,73 +152,182 @@ button:hover{
 
 <div class="login-box">
 
-  <!-- optional: replace logo.png with your image -->
-  <img src="logo.png" class="logo" onerror="this.style.display='none'">
+<!-- Replace logo.png with your logo -->
 
-  <h1>DMK OTP Login</h1>
-  <p>உங்கள் Gmail / Mobile மூலம் Login செய்யவும்</p>
+<img src="logo.png"
+class="logo"
+onerror="this.style.display='none'">
 
-  <input type="text" id="userInput" placeholder="Enter Gmail or Mobile Number">
+<h1>DMK Login</h1>
 
-  <button onclick="sendOTP()">Send OTP</button>
+<p class="sub">
+OTP மூலம் பாதுகாப்பான Login
+</p>
 
-  <input type="text" id="otp" placeholder="Enter OTP">
+<input
+type="text"
+id="phone"
+placeholder="+919042458778">
 
-  <button onclick="verifyOTP()">Verify & Login</button>
+<div id="recaptcha-container"></div>
 
-  <div id="msg"></div>
+<button onclick="sendOTP()">
+Send OTP
+</button>
 
-  <div class="note">
-    Test OTP: <b>123456</b>
-  </div>
+<input
+type="text"
+id="otp"
+placeholder="Enter OTP">
+
+<button onclick="verifyOTP()">
+Verify & Login
+</button>
+
+<div id="msg"></div>
+
+<div class="footer">
+Created by Ravin Tech Solution
+</div>
 
 </div>
 
 <script>
-let testOTP = "123456";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+apiKey: "PASTE_API_KEY",
+
+authDomain:
+"PASTE_PROJECT_ID.firebaseapp.com",
+
+projectId:
+"PASTE_PROJECT_ID",
+
+storageBucket:
+"PASTE_PROJECT_ID.appspot.com",
+
+messagingSenderId:
+"PASTE_SENDER_ID",
+
+appId:
+"PASTE_APP_ID"
+
+};
+
+/* INITIALIZE */
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+/* RECAPTCHA */
+
+window.onload = function(){
+
+window.recaptchaVerifier =
+new firebase.auth.RecaptchaVerifier(
+"recaptcha-container",
+{
+size:"normal",
+
+callback:function(response){
+
+document.getElementById("msg").innerHTML =
+"✅ reCAPTCHA Verified";
+
+}
+});
+
+};
+
+/* SEND OTP */
 
 function sendOTP(){
-  let user = document.getElementById("userInput").value.trim();
 
-  if(user === ""){
-    document.getElementById("msg").innerHTML =
-      "❌ Gmail அல்லது Mobile number உள்ளிடவும்";
-    return;
-  }
+let phone =
+document.getElementById("phone").value.trim();
 
-  localStorage.setItem("gmail", user);
+if(phone === ""){
 
-  document.getElementById("msg").innerHTML =
-    "✅ Test OTP sent: 123456";
+document.getElementById("msg").innerHTML =
+"❌ Mobile number required";
+
+return;
+
 }
+
+auth.signInWithPhoneNumber(
+phone,
+window.recaptchaVerifier
+)
+
+.then(function(confirmationResult){
+
+window.confirmationResult =
+confirmationResult;
+
+document.getElementById("msg").innerHTML =
+"✅ OTP Sent Successfully";
+
+})
+
+.catch(function(error){
+
+document.getElementById("msg").innerHTML =
+error.message;
+
+});
+
+}
+
+/* VERIFY OTP */
 
 function verifyOTP(){
-  let user = document.getElementById("userInput").value.trim();
-  let otp = document.getElementById("otp").value.trim();
 
-  if(user === ""){
-    document.getElementById("msg").innerHTML =
-      "❌ Gmail அல்லது Mobile number உள்ளிடவும்";
-    return;
-  }
+let otp =
+document.getElementById("otp").value.trim();
 
-  if(otp === testOTP){
-    localStorage.setItem("gmail", user);
-    localStorage.setItem("isLoggedIn", "true");
+window.confirmationResult.confirm(otp)
 
-    document.getElementById("msg").innerHTML =
-      "✅ OTP Verified Successfully";
+.then(function(result){
 
-    setTimeout(()=>{
-      window.location.href = "dashboard.html";
-    },1000);
+let user = result.user;
 
-  }else{
-    document.getElementById("msg").innerHTML =
-      "❌ தவறான OTP";
-  }
+localStorage.setItem(
+"isLoggedIn",
+"true"
+);
+
+localStorage.setItem(
+"gmail",
+user.phoneNumber
+);
+
+document.getElementById("msg").innerHTML =
+"✅ Login Successful";
+
+setTimeout(()=>{
+
+window.location.href =
+"dashboard.html";
+
+},1000);
+
+})
+
+.catch(function(error){
+
+document.getElementById("msg").innerHTML =
+"❌ Wrong OTP";
+
+});
+
 }
+
 </script>
 
 </body>
-  </html>
+</html>
